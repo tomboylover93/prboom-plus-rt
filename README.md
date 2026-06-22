@@ -29,7 +29,7 @@ It installs to `/usr` by default, and the binary as well as the launcher script 
 
 ## Build
 
-See BUILDING.md.
+See [BUILDING.md](https://github.com/tomboylover93/prboom-plus-rt/blob/master/docs/BUILDING.md).
 
 ## A couple of notes
 
@@ -116,7 +116,7 @@ With this I got a whopping 448 FPS! Obviously it looks horrible but this is all 
 
 Some things to note:
 
-1. If you're on NVIDIA, DLSS won't be available since this whole source port was made with Windows in mind. Worth trying compiling RTGL1 with `RG_USE_NVIDIA_DLSS` anyway (follow the instructions in BUILDING.md for that). But at this point you may as well just download the official release from sultim-t's repository and run it with Wine since it's less complicated (and, unlike AMD, it should Just Work™). 
+1. If you're on NVIDIA, DLSS won't be available since this whole source port was made with Windows in mind. Worth trying compiling RTGL1 with `RG_USE_NVIDIA_DLSS` anyway (follow the instructions in [BUILDING.md](https://github.com/tomboylover93/prboom-plus-rt/blob/master/docs/BUILDING.md) for that). But at this point you may as well just download the official release from sultim-t's repository and run it with Wine since it's less complicated (and, unlike AMD, it should Just Work™). 
 2. FSR should be available out of the box but it may yield worse performance than just using the render size option (it certainly did for me). You can't use the CRT shader with FSR either because it depends on the render scale option so they cancel eachother out.
 3. The CRT shader used in the 320x200 CRT mode is made by sultim-t and adapted from the [libretro glsl-shaders](https://github.com/libretro/glsl-shaders). It's quite demanding (I noticed 56% higher GPU usage with it enabled) and makes everything look very dark but it lends itself to the horror vibe Doom has at times. It also makes the 320x200 resolution look good enough for gameplay on a 1080p monitor.
 4. CRT interlacing blends 75% of the previous frame with 25% of the current frame on even scanlines, and the reverse (25% previous / 75% current) on odd scanlines, for a ~2x performance boost. But each line effectively updates at half the rate, so if your game is running at 60 FPS it'll look like it's running at 30 FPS when it is not. I recommend enabling it only if you get more than 120 FPS with it disabled so you don't sacrifice the smoothness of 60+ FPS. If you are using the CRT shader, however, I recommend enabling it anyway since it offsets the shader's GPU load and might give you better FPS.
