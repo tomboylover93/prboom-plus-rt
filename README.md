@@ -112,7 +112,7 @@ You may want to disable fullscreen because of some Vulkan swapchain/present mode
 
 With this I got a whopping 448 FPS! Obviously it looks horrible but this is all for the purposes of maximizing FPS. Considering that the original game also ran at 320x200 it's not too bad.
 
-![Screenshot showing max FPS](https://github.com/tomboylover93/prboom-plus-rt/blob/master/screenshots/maxfps.png?raw=true)
+![Screenshot showing max FPS](https://raw.githubusercontent.com/tomboylover93/prboom-plus-rt/refs/heads/master/screenshots/maxfps.png)
 
 Some things to note:
 
