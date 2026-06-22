@@ -65,12 +65,51 @@ void RT_Init()
     .hwnd = wmInfo.info.win.window
   };
 #else
-  RgXlibSurfaceCreateInfo x11Info =
+  void *pSurfaceInfo = NULL;
+  uint32_t surfaceType = 0;
+  RgWaylandSurfaceCreateInfo wlInfo = {};
+  RgXlibSurfaceCreateInfo x11Info = {};
+
+#ifdef RG_USE_SURFACE_WAYLAND
+  if (wmInfo.subsystem == SDL_SYSWM_WAYLAND)
   {
-    .dpy = wmInfo.info.x11.display,
-    .window = wmInfo.info.x11.window
-  };
+    wlInfo.display = wmInfo.info.wl.display;
+    wlInfo.surface = wmInfo.info.wl.surface;
+    pSurfaceInfo = &wlInfo;
+    surfaceType = 1;
+  }
+  else
 #endif
+  {
+    x11Info.dpy = wmInfo.info.x11.display;
+    x11Info.window = wmInfo.info.x11.window;
+    pSurfaceInfo = &x11Info;
+    surfaceType = 2;
+  }
+#endif
+
+  char pShaderPath[1024];
+  char pBlueNoisePath[1024];
+  char pWaterTexturePath[1024];
+  char pOverridenTexturesFolderPath[1024];
+
+  const char *dataDir = getenv("PRBOOM_DATA_DIR");
+  const char *prefix;
+  if (dataDir && dataDir[0]) {
+    prefix = dataDir;
+  } else {
+    prefix = ".";
+    char testPath[1024];
+    snprintf(testPath, sizeof(testPath), "ovrd/BlueNoise_LDR_RGBA_128.ktx2");
+    FILE *f = fopen(testPath, "rb");
+    if (!f) prefix = PRBOOM_DATA_DIR;
+    else fclose(f);
+  }
+
+  snprintf(pShaderPath, sizeof(pShaderPath), "%s/" RG_RESOURCES_FOLDER "shaders/", prefix);
+  snprintf(pBlueNoisePath, sizeof(pBlueNoisePath), "%s/" RG_RESOURCES_FOLDER "BlueNoise_LDR_RGBA_128.ktx2", prefix);
+  snprintf(pWaterTexturePath, sizeof(pWaterTexturePath), "%s/" RG_RESOURCES_FOLDER "WaterNormal_n.ktx2", prefix);
+  snprintf(pOverridenTexturesFolderPath, sizeof(pOverridenTexturesFolderPath), "%s/" RG_RESOURCES_FOLDER "mat/", prefix);
 
   RgInstanceCreateInfo info =
   {
@@ -80,7 +119,8 @@ void RT_Init()
   #if WIN32
     .pWin32SurfaceInfo = &win32Info,
   #else
-    .pXlibSurfaceCreateInfo = &x11Info,
+    .pWaylandSurfaceCreateInfo = surfaceType == 1 ? pSurfaceInfo : NULL,
+    .pXlibSurfaceCreateInfo = surfaceType == 2 ? pSurfaceInfo : NULL,
   #endif
 
   #ifndef NDEBUG
@@ -90,9 +130,9 @@ void RT_Init()
   #endif
     .pfnPrint = RT_Print,
 
-    .pShaderFolderPath = RG_RESOURCES_FOLDER "shaders/",
-    .pBlueNoiseFilePath = RG_RESOURCES_FOLDER "BlueNoise_LDR_RGBA_128.ktx2",
-    .pWaterNormalTexturePath = RG_RESOURCES_FOLDER "WaterNormal_n.ktx2",
+    .pShaderFolderPath = pShaderPath,
+    .pBlueNoiseFilePath = pBlueNoisePath,
+    .pWaterNormalTexturePath = pWaterTexturePath,
 
     .primaryRaysMaxAlbedoLayers = 1,
     .indirectIlluminationMaxAlbedoLayers = 1,
@@ -110,7 +150,7 @@ void RT_Init()
     .maxTextureCount = RG_MAX_TEXTURE_COUNT,
     .textureSamplerForceMinificationFilterLinear = true,
 
-    .pOverridenTexturesFolderPath = RG_RESOURCES_FOLDER "mat/",
+    .pOverridenTexturesFolderPath = pOverridenTexturesFolderPath,
     .overridenAlbedoAlphaTextureIsSRGB = true,
     .overridenRoughnessMetallicEmissionTextureIsSRGB = false,
     .overridenNormalTextureIsSRGB = false,

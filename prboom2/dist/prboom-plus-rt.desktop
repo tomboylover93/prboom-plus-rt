@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=PrBoom-Plus-RT
+Comment=Doom with ray-traced rendering
+Exec=prboom-rt-launcher
+Icon=prboom-plus-rt
+Categories=Game;
+Terminal=true
+StartupNotify=true

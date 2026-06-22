@@ -1,9 +1,9 @@
 
 function(ApplySDL2NetOptions TARGET)
-    if(SDL2_NET_FOUND)
-        target_include_directories(${TARGET} PRIVATE ${SDL2_NET_INCLUDE_DIRS})
-        target_link_libraries(${TARGET} PRIVATE ${SDL2_NET_LIBRARIES})
-    endif()
+  if(SDL2_NET_FOUND)
+    target_include_directories(${TARGET} PRIVATE ${SDL2_NET_INCLUDE_DIRS})
+    target_link_libraries(${TARGET} PRIVATE ${SDL2_NET_LIBRARIES})
+  endif()
 endfunction()
 
 # PrBoom main executable
@@ -179,9 +179,9 @@ set(NET_CLIENT_SRC
 )
 
 if(HAVE_MMAP OR HAVE_CREATE_FILE_MAPPING)
-    set(WAD_SRC w_mmap.c)
+  set(WAD_SRC w_mmap.c)
 else()
-    set(WAD_SRC w_memcache.c)
+  set(WAD_SRC w_memcache.c)
 endif()
 
 set(MUS2MID_SRC
@@ -253,7 +253,7 @@ set(EXTRA_FILES
 )
 
 if (NOT DEFINED ENV{RTGL1_SDK_PATH})
-    message(FATAL_ERROR "Environment variable RTGL1_SDK_PATH is not set. It should point to RTGL1 library directory")
+  message(FATAL_ERROR "Environment variable RTGL1_SDK_PATH is not set. It should point to RTGL1 library directory")
 endif()
 
 set(
@@ -287,8 +287,8 @@ set(PRBOOM_PLUS_SOURCES
 )
 
 function(AddGameExecutable TARGET SOURCES)
-    if(OPENGL_FOUND AND OPENGL_GLU_FOUND)
-        set(SOURCES
+  if(OPENGL_FOUND AND OPENGL_GLU_FOUND)
+    set(SOURCES
             ${SOURCES}
             gl_clipper.c
             gl_detail.c
@@ -313,11 +313,11 @@ function(AddGameExecutable TARGET SOURCES)
             gl_vertex.c
             gl_wipe.c
         )
-    endif()
+  endif()
 
-    if(WIN32)
-        add_definitions("-DUSE_WIN32_PCSOUND_DRIVER -DUSE_WINDOWS_LAUNCHER")
-        set(SOURCES
+  if(WIN32)
+    add_definitions("-DUSE_WIN32_PCSOUND_DRIVER -DUSE_WINDOWS_LAUNCHER")
+    set(SOURCES
             ${SOURCES}
             ../ICONS/icons.rc
             e6y_launcher.c
@@ -326,92 +326,99 @@ function(AddGameExecutable TARGET SOURCES)
             WIN/win_fopen.c
             WIN/win_fopen.h
         )
-        if(MSVC)
-            set(SOURCES
+    if(MSVC)
+      set(SOURCES
                 ${SOURCES}
                 WIN/win_opendir.c
                 WIN/win_opendir.h
             )
-        endif()
     endif()
+  endif()
 
-    add_definitions("-DUSE_EXPERIMENTAL_MUSIC")
+  add_definitions("-DUSE_EXPERIMENTAL_MUSIC")
 
-    add_executable(${TARGET} WIN32 ${SOURCES})
-    target_include_directories(${TARGET} PRIVATE
+  add_executable(${TARGET} WIN32 ${SOURCES})
+  target_include_directories(${TARGET} PRIVATE
         ${SDL2_INCLUDE_DIRS}
         ${CMAKE_BINARY_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}
     )
-    target_link_libraries(${TARGET} PRIVATE
+  target_link_libraries(${TARGET} PRIVATE
         ${SDL2_LIBRARIES}
     )
-    if(WIN32)
-        target_link_libraries(${TARGET} PRIVATE
+  if(WIN32)
+    target_link_libraries(${TARGET} PRIVATE
             winmm
             comctl32
         )
-    endif()
-    set_target_properties(${TARGET} PROPERTIES
+  endif()
+  set_target_properties(${TARGET} PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY ${PRBOOM_OUTPUT_PATH}
     )
-    if(SDL2_IMAGE_FOUND)
-        target_include_directories(${TARGET} PRIVATE ${SDL2_IMAGE_INCLUDE_DIRS})
-        target_link_libraries(${TARGET} PRIVATE ${SDL2_IMAGE_LIBRARIES})
-    endif()
-    if(SDL2_MIXER_FOUND)
-        target_include_directories(${TARGET} PRIVATE ${SDL2_MIXER_INCLUDE_DIRS})
-        target_link_libraries(${TARGET} PRIVATE ${SDL2_MIXER_LIBRARIES})
-    endif()
-    if(PCREPOSIX_FOUND)
-        target_include_directories(${TARGET} PRIVATE ${PCRE_INCLUDE_DIR})
-        target_link_libraries(${TARGET} PRIVATE ${PCREPOSIX_LIBRARIES})
-    endif()
-    ApplySDL2NetOptions(${TARGET})
-    if(ZLIB_FOUND)
-        target_include_directories(${TARGET} PRIVATE ${ZLIB_INCLUDE_DIRS})
-        target_link_libraries(${TARGET} PRIVATE ${ZLIB_LIBRARIES})
-    endif()
-    if(LIBMAD_FOUND)
-        target_include_directories(${TARGET} PRIVATE ${LIBMAD_INCLUDE_DIRS})
-        target_link_libraries(${TARGET} PRIVATE ${LIBMAD_LIBRARIES})
-    endif()
-    if(FLUIDSYNTH_FOUND)
-        target_include_directories(${TARGET} PRIVATE ${FLUIDSYNTH_INCLUDE_DIR})
-        target_link_libraries(${TARGET} PRIVATE ${FLUIDSYNTH_LIBRARIES})
-    endif()
-    if(DUMB_FOUND)
-        target_include_directories(${TARGET} PRIVATE ${DUMB_INCLUDE_DIR})
-        target_link_libraries(${TARGET} PRIVATE ${DUMB_LIBRARY})
-    endif()
-    if(VORBIS_FOUND)
-        target_include_directories(${TARGET} PRIVATE ${VORBIS_INCLUDE_DIRS})
-        target_link_libraries(${TARGET} PRIVATE ${VORBISFILE_LIBRARY})
-    endif()
-    if(PortMidi_FOUND)
-        target_include_directories(${TARGET} PRIVATE ${PORTMIDI_INCLUDE_DIR})
-        target_link_libraries(${TARGET} PRIVATE ${PORTMIDI_LIBRARIES})
-    endif()
-    if(ALSA_FOUND)
-        target_include_directories(${TARGET} PRIVATE ${ALSA_INCLUDE_DIR})
-        target_link_libraries(${TARGET} PRIVATE ${ASOUND_LIBRARY})
-    endif()
-    add_dependencies(${TARGET} prboomwad)
+  if(SDL2_IMAGE_FOUND)
+    target_include_directories(${TARGET} PRIVATE ${SDL2_IMAGE_INCLUDE_DIRS})
+    target_link_libraries(${TARGET} PRIVATE ${SDL2_IMAGE_LIBRARIES})
+  endif()
+  if(SDL2_MIXER_FOUND)
+    target_include_directories(${TARGET} PRIVATE ${SDL2_MIXER_INCLUDE_DIRS})
+    target_link_libraries(${TARGET} PRIVATE ${SDL2_MIXER_LIBRARIES})
+  endif()
+  if(PCREPOSIX_FOUND)
+    target_include_directories(${TARGET} PRIVATE ${PCRE_INCLUDE_DIR})
+    target_link_libraries(${TARGET} PRIVATE ${PCREPOSIX_LIBRARIES})
+  endif()
+  ApplySDL2NetOptions(${TARGET})
+  if(ZLIB_FOUND)
+    target_include_directories(${TARGET} PRIVATE ${ZLIB_INCLUDE_DIRS})
+    target_link_libraries(${TARGET} PRIVATE ${ZLIB_LIBRARIES})
+  endif()
+  if(LIBMAD_FOUND)
+    target_include_directories(${TARGET} PRIVATE ${LIBMAD_INCLUDE_DIRS})
+    target_link_libraries(${TARGET} PRIVATE ${LIBMAD_LIBRARIES})
+  endif()
+  if(FLUIDSYNTH_FOUND)
+    target_include_directories(${TARGET} PRIVATE ${FLUIDSYNTH_INCLUDE_DIR})
+    target_link_libraries(${TARGET} PRIVATE ${FLUIDSYNTH_LIBRARIES})
+  endif()
+  if(DUMB_FOUND)
+    target_include_directories(${TARGET} PRIVATE ${DUMB_INCLUDE_DIR})
+    target_link_libraries(${TARGET} PRIVATE ${DUMB_LIBRARY})
+  endif()
+  if(VORBIS_FOUND)
+    target_include_directories(${TARGET} PRIVATE ${VORBIS_INCLUDE_DIRS})
+    target_link_libraries(${TARGET} PRIVATE ${VORBISFILE_LIBRARY})
+  endif()
+  if(PortMidi_FOUND)
+    target_include_directories(${TARGET} PRIVATE ${PORTMIDI_INCLUDE_DIR})
+    target_link_libraries(${TARGET} PRIVATE ${PORTMIDI_LIBRARIES})
+  endif()
+  if(ALSA_FOUND)
+    target_include_directories(${TARGET} PRIVATE ${ALSA_INCLUDE_DIR})
+    target_link_libraries(${TARGET} PRIVATE ${ASOUND_LIBRARY})
+  endif()
+  add_dependencies(${TARGET} prboomwad)
 
-    if(MSVC)
-        set_target_properties(${TARGET} PROPERTIES
+  if(MSVC)
+    set_target_properties(${TARGET} PROPERTIES
             LINK_FLAGS "/MANIFEST:NO"
         )
-        add_custom_command(TARGET ${TARGET} POST_BUILD
+    add_custom_command(TARGET ${TARGET} POST_BUILD
             COMMAND "mt.exe" -manifest \"${CMAKE_CURRENT_SOURCE_DIR}\\..\\ICONS\\prboom-plus.exe.manifest\" -outputresource:\"$<TARGET_FILE:prboom-plus>\"\;\#1
             COMMAND ${CMAKE_COMMAND} -E copy_if_different ${WAD_DATA_PATH} $<TARGET_FILE_DIR:prboom-plus>
         )
-    endif()
+  endif()
 
-    install(TARGETS ${TARGET} COMPONENT "Game executable" RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
+  set_target_properties(${TARGET} PROPERTIES INSTALL_RPATH "$ORIGIN")
 
-    if(OPENGL_FOUND AND OPENGL_GLU_FOUND)
-        target_compile_definitions(${TARGET} PRIVATE
+  install(FILES ${PRBOOM_OUTPUT_PATH}/prboom-plus
+      DESTINATION bin
+      RENAME prboom-plus-rt
+      PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
+                  GROUP_READ GROUP_EXECUTE
+                  WORLD_READ WORLD_EXECUTE)
+
+  if(OPENGL_FOUND AND OPENGL_GLU_FOUND)
+    target_compile_definitions(${TARGET} PRIVATE
             GL_DOOM
             USE_SHADERS
             USE_FBO_TECHNIQUE
@@ -419,51 +426,54 @@ function(AddGameExecutable TARGET SOURCES)
             USE_GLU_MIPMAP
             USE_GLU_TESS
         )
-        target_link_libraries(${TARGET} PRIVATE
+    target_link_libraries(${TARGET} PRIVATE
             ${OPENGL_gl_LIBRARY}
             ${OPENGL_glu_LIBRARY}
         )
-    endif()
+  endif()
 
-    # RT library
-    add_library(RayTracedGL1 SHARED IMPORTED)
+  add_library(RayTracedGL1 SHARED IMPORTED)
 
-    if(WIN32)
-        set_target_properties(RayTracedGL1 PROPERTIES
+  if(WIN32)
+    set_target_properties(RayTracedGL1 PROPERTIES
             INTERFACE_INCLUDE_DIRECTORIES "$ENV{RTGL1_SDK_PATH}/Include"
             IMPORTED_LOCATION       "$ENV{RTGL1_SDK_PATH}/Build/x64-Release/RayTracedGL1.dll"
             IMPORTED_LOCATION_DEBUG "$ENV{RTGL1_SDK_PATH}/Build/x64-Debug/RayTracedGL1.dll"
             IMPORTED_IMPLIB         "$ENV{RTGL1_SDK_PATH}/Build/x64-Release/RayTracedGL1.lib"
             IMPORTED_IMPLIB_DEBUG   "$ENV{RTGL1_SDK_PATH}/Build/x64-Debug/RayTracedGL1.lib"
         )
-        target_compile_definitions(${TARGET} PRIVATE RG_USE_SURFACE_WIN32)
-    endif()
-    if(UNIX)
-        set_target_properties(RayTracedGL1 PROPERTIES
+    target_compile_definitions(${TARGET} PRIVATE RG_USE_SURFACE_WIN32)
+  endif()
+  if(UNIX)
+    set_target_properties(RayTracedGL1 PROPERTIES
             INTERFACE_INCLUDE_DIRECTORIES "$ENV{RTGL1_SDK_PATH}/Include"
             IMPORTED_LOCATION       "$ENV{RTGL1_SDK_PATH}/Build/RelWithDebInfo/libRayTracedGL1.so"
             IMPORTED_LOCATION_DEBUG "$ENV{RTGL1_SDK_PATH}/Build/Debug/libRayTracedGL1.so"
         )
-        target_compile_definitions(${TARGET} PRIVATE RG_USE_SURFACE_XLIB)
-        target_compile_definitions(${TARGET} PRIVATE ZLIB_CONST)
-    endif()
+    target_compile_definitions(${TARGET} PRIVATE RG_USE_SURFACE_WAYLAND)
+    target_compile_definitions(${TARGET} PRIVATE RG_USE_SURFACE_XLIB)
+    target_compile_definitions(${TARGET} PRIVATE ZLIB_CONST)
+  endif()
 
-    target_link_libraries(${TARGET} PRIVATE RayTracedGL1)
-    target_compile_definitions(${TARGET} PRIVATE RT_CUSTOM_MENU=1 RT_DISABLE_SMALL_VIEWPORTS=1
+  target_link_libraries(${TARGET} PRIVATE RayTracedGL1)
+  if(DEFINED PRBOOM_DATA_DIR)
+    target_compile_definitions(${TARGET} PRIVATE PRBOOM_DATA_DIR="${PRBOOM_DATA_DIR}")
+  endif()
+  target_compile_definitions(${TARGET} PRIVATE RT_CUSTOM_MENU=1 RT_DISABLE_SMALL_VIEWPORTS=1
       RT_DOOM1_HACKS=1 RT_CUSTOM_MAP_DATA=1)
 
-    # Copy library files
-    if(WIN32)
-        get_target_property(RTGL1_DLL RayTracedGL1 IMPORTED_LOCATION)
-        get_target_property(RTGL1_DLL_D RayTracedGL1 IMPORTED_LOCATION_DEBUG)
-        add_custom_command(TARGET ${TARGET} POST_BUILD
+  # Copy library files
+  if(WIN32)
+    get_target_property(RTGL1_DLL RayTracedGL1 IMPORTED_LOCATION)
+    get_target_property(RTGL1_DLL_D RayTracedGL1 IMPORTED_LOCATION_DEBUG)
+    add_custom_command(TARGET ${TARGET} POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "$<$<CONFIG:Debug>:${RTGL1_DLL_D}>"
             "$<$<CONFIG:MinSizeRel>:${RTGL1_DLL}>"
             "$<$<CONFIG:RelWithDebInfo>:${RTGL1_DLL}>"
             "$<$<CONFIG:Release>:${RTGL1_DLL}>"
         $<TARGET_FILE_DIR:${TARGET}>/RayTracedGL1.dll)
-    endif()
+  endif()
 
 endfunction()
 
@@ -475,53 +485,53 @@ AddGameExecutable(prboom-plus "${PRBOOM_PLUS_SOURCES}")
 option(BUILD_SERVER "Build PrBoom-Plus server executable" ON)
 
 if(BUILD_SERVER AND SDL2_NET_FOUND)
-    set(PRBOOM_PLUS_GAME_SERVER_SOURCES
+  set(PRBOOM_PLUS_GAME_SERVER_SOURCES
         d_server.c
         protocol.h
         SDL/i_network.c
     )
 
-    if(WIN32)
-        set(PRBOOM_PLUS_GAME_SERVER_SOURCES
+  if(WIN32)
+    set(PRBOOM_PLUS_GAME_SERVER_SOURCES
             ${PRBOOM_PLUS_GAME_SERVER_SOURCES}
             WIN/win_fopen.c
             WIN/win_fopen.h
         )
-    endif()
-    if(MSVC)
-        set(PRBOOM_PLUS_GAME_SERVER_SOURCES
+  endif()
+  if(MSVC)
+    set(PRBOOM_PLUS_GAME_SERVER_SOURCES
             ${PRBOOM_PLUS_GAME_SERVER_SOURCES}
             SDL/i_system.c
         )
-    else()
-        set(PRBOOM_PLUS_GAME_SERVER_SOURCES
+  else()
+    set(PRBOOM_PLUS_GAME_SERVER_SOURCES
             ${PRBOOM_PLUS_GAME_SERVER_SOURCES}
             POSIX/i_system.c
         )
-    endif()
+  endif()
 
-    add_executable(prboom-plus-game-server ${PRBOOM_PLUS_GAME_SERVER_SOURCES})
-    target_include_directories(prboom-plus-game-server PRIVATE
+  add_executable(prboom-plus-game-server ${PRBOOM_PLUS_GAME_SERVER_SOURCES})
+  target_include_directories(prboom-plus-game-server PRIVATE
         ${SDL2_INCLUDE_DIRS}
         ${CMAKE_BINARY_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}
     )
-    target_link_libraries(prboom-plus-game-server PRIVATE
+  target_link_libraries(prboom-plus-game-server PRIVATE
         ${SDL2_LIBRARIES}
     )
-    set_target_properties(prboom-plus-game-server PROPERTIES
+  set_target_properties(prboom-plus-game-server PROPERTIES
         COMPILE_DEFINITIONS PRBOOM_SERVER
         RUNTIME_OUTPUT_DIRECTORY ${PRBOOM_OUTPUT_PATH}
     )
-    ApplySDL2NetOptions(prboom-plus-game-server)
-    install(TARGETS prboom-plus-game-server COMPONENT "Game server executable" RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
+  ApplySDL2NetOptions(prboom-plus-game-server)
+  install(TARGETS prboom-plus-game-server COMPONENT "Game server executable" RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
 endif()
 
 
 # PrBoom-Plus macOS launcher
 
 if(APPLE)
-    set(LAUNCHER_SOURCES
+  set(LAUNCHER_SOURCES
         MAC/ANSIString.m
         MAC/ConsoleController.h
         MAC/ConsoleController.m
@@ -543,53 +553,53 @@ if(APPLE)
         MAC/WadViewController.m
     )
 
-    set(LAUNCHER_RESOURCES
+  set(LAUNCHER_RESOURCES
         MAC/Launcher.icns
         MAC/PrBoom.icns
         MAC/PrBoom.sdef
     )
-    set_source_files_properties(${LAUNCHER_RESOURCES} PROPERTIES
+  set_source_files_properties(${LAUNCHER_RESOURCES} PROPERTIES
         MACOSX_PACKAGE_LOCATION Resources
     )
 
-    set(LAUNCHER_MAINMENU_RESOURCES
+  set(LAUNCHER_MAINMENU_RESOURCES
         MAC/English.lproj/MainMenu.nib/classes.nib
         MAC/English.lproj/MainMenu.nib/info.nib
         MAC/English.lproj/MainMenu.nib/keyedobjects.nib
     )
-    set_source_files_properties(${LAUNCHER_MAINMENU_RESOURCES} PROPERTIES
+  set_source_files_properties(${LAUNCHER_MAINMENU_RESOURCES} PROPERTIES
         MACOSX_PACKAGE_LOCATION Resources/English.lproj/MainMenu.nib
     )
 
-    add_executable(prboom-plus-launcher MACOSX_BUNDLE
+  add_executable(prboom-plus-launcher MACOSX_BUNDLE
         ${LAUNCHER_SOURCES}
         ${LAUNCHER_RESOURCES}
         ${LAUNCHER_MAINMENU_RESOURCES}
     )
-    target_include_directories(prboom-plus-launcher PRIVATE
+  target_include_directories(prboom-plus-launcher PRIVATE
         ${CMAKE_BINARY_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}
     )
-    set_target_properties(prboom-plus-launcher PROPERTIES
+  set_target_properties(prboom-plus-launcher PROPERTIES
         LINK_FLAGS "-framework Cocoa"
         MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/MAC/Info.plist"
         OUTPUT_NAME "Launcher"
         RUNTIME_OUTPUT_DIRECTORY ${PRBOOM_OUTPUT_PATH}
         XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY ""
     )
-    add_dependencies(prboom-plus-launcher prboom-plus)
+  add_dependencies(prboom-plus-launcher prboom-plus)
 
-    set(BUNDLE_GAME_EXECUTABLE prboom-plus)
+  set(BUNDLE_GAME_EXECUTABLE prboom-plus)
 
-    add_custom_command(TARGET prboom-plus-launcher POST_BUILD
+  add_custom_command(TARGET prboom-plus-launcher POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${BUNDLE_GAME_EXECUTABLE}> $<TARGET_FILE_DIR:prboom-plus-launcher>/PrBoom-Plus
         COMMAND ${CMAKE_COMMAND} -E copy_if_different ${WAD_DATA_PATH} $<TARGET_FILE_DIR:prboom-plus-launcher>
     )
 
-    if(BUILD_SERVER AND SDL2_NET_FOUND)
-        add_dependencies(prboom-plus-launcher prboom-plus-game-server)
-        add_custom_command(TARGET prboom-plus-launcher POST_BUILD
+  if(BUILD_SERVER AND SDL2_NET_FOUND)
+    add_dependencies(prboom-plus-launcher prboom-plus-game-server)
+    add_custom_command(TARGET prboom-plus-launcher POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:prboom-plus-game-server> $<TARGET_FILE_DIR:prboom-plus-launcher>
         )
-    endif()
+  endif()
 endif()

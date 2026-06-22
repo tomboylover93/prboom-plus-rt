@@ -1,0 +1,69 @@
+#!/bin/bash
+# fzf-based IWAD chooser for prboom-plus-rt
+
+DATA_DIR="${PRBOOM_DATA_DIR:-/usr/share/prboom-rt}"
+PRBOOM_BIN="prboom-plus-rt"
+
+# detect-rt script
+if [ -f "$DATA_DIR/detect-rt.sh" ]; then
+  source "$DATA_DIR/detect-rt.sh"
+elif [ -f "/usr/share/prboom-rt/detect-rt.sh" ]; then
+  source "/usr/share/prboom-rt/detect-rt.sh"
+fi
+
+mapfile -t IWADS < <(
+  find "$DATA_DIR" -maxdepth 1 \( -iname "*.wad" -o -iname "*.iwad" \) \
+    ! -iname "prboom-plus.wad" 2>/dev/null | sort
+)
+
+if [ ${#IWADS[@]} -eq 0 ]; then
+  echo "No IWAD files found in $DATA_DIR"
+  echo "Place your .wad files there or set PRBOOM_DATA_DIR"
+  exit 1
+fi
+
+# fzf chooser
+if command -v fzf &>/dev/null; then
+  SELECTED=$(printf '%s\n' "${IWADS[@]##*/}" | fzf \
+    --prompt="Select IWAD > " \
+    --height=~30% \
+    --reverse)
+  if [ -z "$SELECTED" ]; then exit 0; fi
+  for w in "${IWADS[@]}"; do
+    if [ "${w##*/}" = "$SELECTED" ]; then IWAD="$w"; break; fi
+  done
+else
+  echo "Select IWAD:"
+  select IWAD in "${IWADS[@]}"; do
+    if [ -n "$IWAD" ]; then break; fi
+  done
+fi
+
+echo "Launching: $IWAD"
+
+# use game-specific ovrd parent folder
+IWAD_NAME=$(basename "$IWAD" | tr '[:upper:]' '[:lower:]' | sed 's/\.[^.]*$//')
+GAME_DIR="$DATA_DIR/$IWAD_NAME"
+if [ -d "$GAME_DIR/ovrd" ]; then
+  export PRBOOM_DATA_DIR="$GAME_DIR"
+  echo "Using game dir: $GAME_DIR"
+  case "$IWAD_NAME" in
+    doom)
+      if [ -f "$GAME_DIR/ovrd/map_metainfo_doom1.txt" ]; then
+        IWADRT="$GAME_DIR/ovrd/map_metainfo_doom1.txt"
+      fi ;;
+    doom2)
+      if [ -f "$GAME_DIR/ovrd/map_metainfo_doom2.txt" ]; then
+        IWADRT="$GAME_DIR/ovrd/map_metainfo_doom2.txt"
+      fi ;;
+  esac
+  # change to game dir so M_ReadFile finds textures_metainfo.txt etc.
+  cd "$GAME_DIR"
+fi
+
+extra_args=()
+if [ -n "$IWADRT" ]; then
+  extra_args+=(-iwadrt "$IWADRT")
+fi
+
+exec "$PRBOOM_BIN" "${extra_args[@]}" -iwad "$IWAD" "$@"

@@ -62,10 +62,14 @@ static const char *GetMapMetaInfoFile()
     return myargv[i];
   }
 
-  // use default one if Doom 1993
+  // use defaults based on game
   if (gamemission == doom)
   {
     return RG_RESOURCES_FOLDER"map_metainfo_doom1.txt";
+  }
+  if (gamemission == doom2)
+  {
+    return RG_RESOURCES_FOLDER"map_metainfo_doom2.txt";
   }
 
   return NULL;
